@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>원랜디 듀컨 룰렛</title>
+  <meta name="description" content="슥균맨 듀컨 미션을 그대로 뽑아보는 원랜디 미션 룰렛">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏴‍☠️</text></svg>">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark">☠</span>
+      <div>
+        <div class="brand-title">원랜디 듀컨 룰렛</div>
+        <div class="brand-sub">오늘의 미션은 뭘까요</div>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <a href="#roulette" data-tab="roulette">룰렛</a>
+      <a href="#catalog" data-tab="catalog">도감</a>
+      <a href="#impel" data-tab="impel">임펠다운</a>
+      <a href="#record" data-tab="record">전적</a>
+      <a href="#fortune" data-tab="fortune">운세</a>
+      <a href="#settings" data-tab="settings">설정</a>
+    </nav>
+    <button class="icon-btn" id="soundBtn" title="소리 켜기/끄기">🔊</button>
+  </header>
+
+  <main>
+    <!-- 룰렛 -->
+    <section id="page-roulette" class="page">
+      <div class="token-bar" id="tokenBar"></div>
+
+      <div class="stage">
+        <div class="reel-wrap">
+          <div class="reel-label">이번 판 미션</div>
+          <div class="reel" id="reel"><span id="reelText">?</span></div>
+          <div class="stamp" id="stamp">슛!</div>
+        </div>
+        <div class="stage-actions">
+          <button class="btn btn-shoot" id="shootBtn">슛! 돌리기</button>
+          <button class="btn btn-ghost" id="rerollBtn" disabled>리롤권 쓰기</button>
+          <select id="pickMission" class="select" title="미션 직접 고르기">
+            <option value="">직접 고르기…</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="result" class="result"></div>
+    </section>
+
+    <!-- 도감 -->
+    <section id="page-catalog" class="page">
+      <div class="page-head">
+        <h2>미션 도감</h2>
+        <p class="muted">슥균맨 원랜디 영상 약 1,090개의 자막을 분석해 정리한 미션입니다. 영상 수는 자동 분류 기준이라 실제보다 적을 수 있어요.</p>
+      </div>
+      <div class="filter-row" id="catFilter"></div>
+      <div class="cards" id="catalogList"></div>
+      <div class="page-head">
+        <h2>유닛 목록</h2>
+        <p class="muted" id="unitMeta"></p>
+      </div>
+      <div id="unitList" class="unit-groups"></div>
+    </section>
+
+    <!-- 임펠다운 -->
+    <section id="page-impel" class="page">
+      <div class="page-head">
+        <h2>임펠다운 <span class="muted small">대감옥</span></h2>
+        <p class="muted">미션에 실패하거나 죽은 사람은 수감됩니다. 탈출 미션을 깨고 스샷에 죄수번호를 남기면 석방!</p>
+      </div>
+      <div class="panel">
+        <div class="form-row">
+          <label>수감할 사람 <select id="jailPlayer" class="select"></select></label>
+          <label class="grow">사유 <input id="jailReason" class="input" placeholder="예) 신세계 전 라인사"></label>
+          <button class="btn btn-danger" id="jailBtn">수감시키기</button>
+        </div>
+      </div>
+      <h3 class="sub-head">현재 수감자</h3>
+      <div id="jailList" class="cards"></div>
+      <h3 class="sub-head">출소 기록</h3>
+      <div id="jailDone" class="table-wrap"></div>
+    </section>
+
+    <!-- 전적 -->
+    <section id="page-record" class="page">
+      <div class="page-head">
+        <h2>판 결과 계산</h2>
+        <p class="muted">팀 유카와 미션 실패 수를 넣으면 벌칙을 더해서 승패를 정해줍니다.</p>
+      </div>
+      <div class="panel" id="recordForm"></div>
+      <div id="recordPreview" class="preview"></div>
+      <h3 class="sub-head">플레이어 전적</h3>
+      <div id="statTable" class="table-wrap"></div>
+      <h3 class="sub-head">지난 판</h3>
+      <div id="historyList" class="table-wrap"></div>
+    </section>
+
+    <!-- 운세 -->
+    <section id="page-fortune" class="page">
+      <div class="page-head">
+        <h2>오늘의 원랜디 운세</h2>
+        <p class="muted" id="fortuneDate"></p>
+      </div>
+      <div class="form-row panel">
+        <label class="grow">이름으로 보기 <input id="fortuneName" class="input" placeholder="이름을 입력하면 그 사람의 오늘 운세"></label>
+        <button class="btn" id="fortuneBtn">운세 보기</button>
+      </div>
+      <div id="fortuneList" class="cards"></div>
+    </section>
+
+    <!-- 설정 -->
+    <section id="page-settings" class="page">
+      <div class="page-head"><h2>설정</h2></div>
+      <div class="panel">
+        <h3>플레이어</h3>
+        <p class="muted small">빨강·파랑이 한 팀, 보라·노랑이 한 팀입니다.</p>
+        <div id="playerInputs" class="player-inputs"></div>
+      </div>
+      <div class="panel">
+        <h3>리롤권 · 거부권</h3>
+        <p class="muted small">리롤권: 미션을 통째로 다시 뽑기. 거부권: 내 개인 결과(숫자, 강원랜디 미션 등)만 다시 뽑기.</p>
+        <div class="form-row">
+          <label>시즌당 리롤권 <input type="number" min="0" max="9" id="cfgReroll" class="input num"></label>
+          <label>시즌당 거부권 <input type="number" min="0" max="9" id="cfgVeto" class="input num"></label>
+          <button class="btn" id="newSeasonBtn">새 시즌 시작 (토큰 충전)</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>벌칙</h3>
+        <div class="form-row">
+          <label>미션 실패 1개당 유카 + <input type="number" min="0" max="50" id="cfgPenalty" class="input num"></label>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>룰렛에 넣을 미션</h3>
+        <div id="missionToggles" class="toggle-grid"></div>
+      </div>
+      <div class="panel">
+        <h3>연출</h3>
+        <label class="check"><input type="checkbox" id="cfgFast"> 빠른 연출 (룰렛 짧게)</label>
+        <label class="check"><input type="checkbox" id="cfgSound"> 효과음</label>
+      </div>
+      <div class="panel">
+        <h3>데이터</h3>
+        <p class="muted small">기록은 이 브라우저에만 저장됩니다. 다른 기기로 옮기려면 백업 파일을 쓰세요.</p>
+        <div class="form-row">
+          <button class="btn" id="exportBtn">백업 내려받기</button>
+          <label class="btn btn-ghost file-btn">백업 불러오기 <input type="file" id="importFile" accept="application/json" hidden></label>
+          <button class="btn btn-danger" id="resetBtn">전체 초기화</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span id="footMeta"></span>
+    <span>· 팬 제작 도구이며 슥균맨·ORDR과 무관합니다.</span>
+  </footer>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-box">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data-units.js"></script>
+  <script src="js/data-missions.js"></script>
+  <script src="js/data-videos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
